@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <form action="" method="post">
+            {% csrf_token %}
+
+            <input type="text" name="search">
+            <button>envoyer</button>
+        </form>
+        {% for message in messages %}
+        <div class="messages">
+            {{message}}
+        </div>
+        {% endfor %}
+
+        {% for image in new_image %}
+        <div>
+            <img src="{{ image.url_image }}" alt="">
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
