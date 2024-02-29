@@ -4,12 +4,11 @@ from django.contrib import messages
 from .models import  ImageContent
 from .api_image import searchImage
 
-ur  = searchImage('homme')
-print(ur, "*******************")
+
 def index(request):
     image_all = ImageContent.objects.all()
     if request.method == 'POST':
-        if len(image_all) == 0:
+        if len(image_all) != 0:
             image_all.delete()
 
         try:
