@@ -5,9 +5,9 @@ url = 'https://www.huffingtonpost.fr/jo-paris-2024/article/le-village-olympique-
 
 response = requests.get(url)
 response.encoding = response.apparent_encoding
+
+
 def scraping_content(response):
-    
-    
     if response.status_code == 200:
         html = response.text
         infos = {}
@@ -42,7 +42,10 @@ def scraping_content(response):
         with open("data.json", 'w', encoding='utf-8') as f:
             json.dump(date,f, ensure_ascii=False, indent=4)
 
+        return infos
+    return None
 
+infos = scraping_content(response)
 def load_data(infos):
     data = []
 
@@ -51,5 +54,5 @@ def load_data(infos):
     with open("data.json", 'w', encoding='utf-8') as f:
         json.dump(date,f, ensure_ascii=False, indent=4)
 
-
+    return data
 

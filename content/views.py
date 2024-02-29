@@ -3,7 +3,9 @@ from django.contrib import messages
 # Create your views here.
 from .models import  ImageContent
 from .api_image import searchImage
+from .scraping_blog import load_data
 
+load_data()
 
 def index(request):
     image_all = ImageContent.objects.all()
