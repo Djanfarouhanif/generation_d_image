@@ -3,45 +3,59 @@ import json
 from bs4 import BeautifulSoup
 url = 'https://www.huffingtonpost.fr/jo-paris-2024/article/le-village-olympique-des-jo-de-paris-2024-inaugure-par-emmanuel-macron-ce-29-fevrier-a-un-futur-tout-trace_230481.html'
 
-response = requests.get(url)
-
+#------------------gestions des erreues------------------------
+def get_text_if_note_none(e):
+    if e:
+        return e.text.strip()
+    return None
 
 #------------------Recuille des donnée-------------------------
-def scraping_content(response):
-    response.encoding = response.apparent_encoding
-    if response.status_code == 200:
-        html = response.text
-        infos = {}
-        soup = BeautifulSoup(html, 'html5lib')
-        #Time publish
-        time  = soup.find('time', class_='article-metas')
-        date = time.find('span', class_='article-metas__date--update')
-        infos["date_pusblishe"] = date.text
+def scraping_content(url):
+    try: 
+        response = requests.get(url)
+        response.encoding = response.apparent_encoding
+        if response.status_code == 200:
+            html = response.text
+            infos = {}
+            soup = BeautifulSoup(html, 'html5lib')
+            #Time publish
+            if soup:
 
-        # #Titre de l'article
-        header = soup.find('header', class_ = "article-header")
-        title = header.find('h1', class_ = "article-title").text.strip()
-        article_shapo = header.find('p').text.strip()
-        infos['title'] = title
-        infos['article_shapo'] = article_shapo
+                time  = soup.find('time', class_='article-metas')
+                date = get_text_if_note_none( time.find('span', class_='article-metas__date--update'))
+                if date:
+                    infos["date_pusblishe"] = date
 
-        #Contenu de l'article
+                # #Titre de l'article
+                
+                header = soup.find('header', class_ = "article-header")
+                title = get_text_if_note_none(header.find('h1', class_ = "article-title"))
+                article_shapo = get_text_if_note_none( header.find('p'))
+                if title:
+                    infos['title'] = title
+                if article_shapo:
+                    infos['article_shapo'] = article_shapo
 
-        article_conent = soup.find("div", class_= "article-content")
+                #Contenu de l'article
 
-        all_paragraphe = []
-        paragraphe = article_conent.find_all("p", class_= 'asset-text')
-        for p in paragraphe:
-            all_paragraphe.append(p.text.strip()+"\n")
+                article_conent = soup.find("div", class_= "article-content")
 
-        text_paragraphe = ' '.join(all_paragraphe)
+                all_paragraphe = []
+                paragraphe = article_conent.find_all("p", class_= 'asset-text')
+                for p in paragraphe:
+                    if 'HuffPost' not in str(p):
+                        all_paragraphe.append(p.text.strip()+"\n")
+                        
+                print(all_paragraphe)
+                text_paragraphe = ' '.join(all_paragraphe)
+                if paragraphe:
+                    infos['article_content'] = text_paragraphe
 
-        infos['article_content'] = text_paragraphe
-
-        
-
-        return infos
-    return None
+                return infos
+            else:
+                return None
+    except:
+        return None
 
 
 #--------------Ajouter ces donnée dans un fichier json-----------------
@@ -49,8 +63,6 @@ def load_data(infos_content):
     data = []
     print("''''''''''''''''''''''''")
     data.append(infos_content)
-    print(data, "---------dddddddddddddddd--------")
-    l = [{"hainf": "hain"}]
     with open("data.json", 'w',encoding="utf-8") as f:
         
         json.dump(data,f, ensure_ascii=False,indent=4)
@@ -59,6 +71,7 @@ def load_data(infos_content):
 
 def run():
     #------------Creation d'un niveau object------------
-    infos = scraping_content(response)
-
+    infos = scraping_content(url)
     data = load_data(infos)
+
+    return data and infos

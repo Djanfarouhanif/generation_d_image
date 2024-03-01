@@ -6,6 +6,8 @@ from .api_image import searchImage
 from .scraping_blog import run
 
 run()
+n = run()
+
 
 def index(request):
     image_all = ImageContent.objects.all()
