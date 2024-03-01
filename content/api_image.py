@@ -2,8 +2,8 @@
 import requests
 import random
 import os
+import json
 
-print("*************************************" , os.getcwd())
 def searchImage(title):
     API_KEY = open('content/API_KEY').read()
     SEARCH_ENIGIME_ID = open('content/SEARCH_ENIGIME_ID').read()

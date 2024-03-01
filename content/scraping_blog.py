@@ -44,9 +44,8 @@ def scraping_content(url):
                 paragraphe = article_conent.find_all("p", class_= 'asset-text')
                 for p in paragraphe:
                     if 'HuffPost' not in str(p):
-                        all_paragraphe.append(p.text.strip()+"\n")
+                        all_paragraphe.append(p.text.strip())
                         
-                print(all_paragraphe)
                 text_paragraphe = ' '.join(all_paragraphe)
                 if paragraphe:
                     infos['article_content'] = text_paragraphe
@@ -61,7 +60,6 @@ def scraping_content(url):
 #--------------Ajouter ces donnée dans un fichier json-----------------
 def load_data(infos_content):
     data = []
-    print("''''''''''''''''''''''''")
     data.append(infos_content)
     with open("data.json", 'w',encoding="utf-8") as f:
         
@@ -75,3 +73,5 @@ def run():
     data = load_data(infos)
 
     return data and infos
+
+run()
