@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class ImageContent(models.Model):
-    image_id = models.IntegerField(primary_key=True)
+    image_id = models.IntegerField(primary_key=True, default=0)
     title = models.CharField(max_length=100, null=True)
     url_image = models.URLField(null=True)
 

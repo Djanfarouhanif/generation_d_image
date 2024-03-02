@@ -1,18 +1,39 @@
 import requests
 import json
 from bs4 import BeautifulSoup
-url = 'https://www.huffingtonpost.fr/jo-paris-2024/article/le-village-olympique-des-jo-de-paris-2024-inaugure-par-emmanuel-macron-ce-29-fevrier-a-un-futur-tout-trace_230481.html'
+import random
+url = 'https://www.huffingtonpost.fr'
 
+#All_url
+def urls(url):
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            html = response.text
+            soup = BeautifulSoup(html, 'html5lib')
+            url_container = soup.find('section', class_= "newsUne")
+            all_url = url_container.find_all('a')
+            fichier_json_all_link = {}
+            url_link = []
+            for a in all_url:
+                url_link.append(a.get("href"))
+            fichier_json_all_link['links'] = url_link
+            with open("link.json", "w", encoding='utf-8') as link_fichier:
+                json.dump(fichier_json_all_link, link_fichier, ensure_ascii=True)
+    except:
+        return None
 #------------------gestions des erreues------------------------
+urls(url)
+
 def get_text_if_note_none(e):
     if e:
         return e.text.strip()
     return None
 
 #------------------Recuille des donnée-------------------------
-def scraping_content(url):
+def scraping_content(link):
     try: 
-        response = requests.get(url)
+        response = requests.get(link)
         response.encoding = response.apparent_encoding
         if response.status_code == 200:
             html = response.text
@@ -22,7 +43,7 @@ def scraping_content(url):
             if soup:
 
                 time  = soup.find('time', class_='article-metas')
-                date = get_text_if_note_none( time.find('span', class_='article-metas__date--update'))
+                date = get_text_if_note_none( time.find('span', class_='article-metas__date'))
                 if date:
                     infos["date_pusblishe"] = date
 
@@ -66,12 +87,20 @@ def load_data(infos_content):
         json.dump(data,f, ensure_ascii=False,indent=4)
 
     return data
+def current_link():
+    link_root = './link.json'
 
+    with open(link_root, 'r', encoding='utf-8') as f:
+        link = json.load(f)
+        links = link['links']
+        link = random.choice(links)
+        return link
+
+print(current_link())
 def run():
     #------------Creation d'un niveau object------------
-    infos = scraping_content(url)
+    infos = scraping_content(current_link())
     data = load_data(infos)
-
     return data and infos
 
 run()
