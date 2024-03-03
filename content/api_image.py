@@ -16,16 +16,21 @@ def searchImage(title):
         'searchType': 'image'
     }
     allUrls = []
-    response = requests.get(url, params=params)
-    if response.status_code == 200:
-        urls_response = response.json()['items']
-        for index in range(len(urls_response)):
-            allUrls.append(urls_response[index]['link'])
-        url_send = random.choice(allUrls)
+    try:
+        response = requests.get(url, params=params)
+    except:
+        response = None
 
-        return url_send
+    if response:
+        if response.status_code == 200:
+            urls_response = response.json()['items']
+            for index in range(len(urls_response)):
+                allUrls.append(urls_response[index]['link'])
+            
 
+            return allUrls
+
+        return None
     return None
-
 
      

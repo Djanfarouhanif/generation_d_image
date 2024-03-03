@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gallery</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="search" name="search" placeholder="search">
+        <button>Envoyer</button>
+    </form>
+
+    <div class="gallery-container">
+       
+        <img src="/static/image/back.png" alt="" id="backbtn">
+        <div class="gallery">
+            {% for image in images %}
+                <div>
+                    <img src="{{image.url_image}}" alt="">
+                </div>
+            {% endfor %}
+           
+        </div>
+        <img src="/static/image/next.png" alt="" id="nextbtn">
+    </div>
+    <script src="/static/js/scripts.js"></script>
+</body>
+</html>
